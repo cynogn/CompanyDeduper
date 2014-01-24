@@ -1,3 +1,7 @@
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.infoarmy.ir.model.company.Company;
 import com.infoarmy.ir.model.company.CompanyNameUtils;
 
@@ -11,6 +15,7 @@ import com.infoarmy.ir.model.company.CompanyNameUtils;
  */
 public class PrimaryNameRunnable implements Runnable {
 	Company currentCompany, nextCompany;
+	ConcurrentHashMap<HashSet<String>, Serializable> map;
 
 	@Override
 	public void run() {
@@ -29,9 +34,11 @@ public class PrimaryNameRunnable implements Runnable {
 		return LevenshteinDistance.printDistance(strippedName, strippedName2);
 	}
 
-	public PrimaryNameRunnable(Company currentCompany, Company nextCompany) {
+	public PrimaryNameRunnable(Company currentCompany, Company nextCompany,
+			ConcurrentHashMap<HashSet<String>, Serializable> set) {
 		this.currentCompany = currentCompany;
 		this.nextCompany = nextCompany;
+		this.map = map;
 	}
 
 }

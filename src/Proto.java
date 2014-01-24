@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -19,11 +22,14 @@ public class Proto {
 			"/Users/gautambalasubramanian/companies_new_result2.txt");
 	static FileWriter fw;
 	static BufferedWriter bw;
+	static ConcurrentHashMap<HashSet<String>, Serializable> map;
 
 	public static void main(String[] args) throws IOException {
 		fw = new FileWriter(file.getAbsoluteFile());
 		bw = new BufferedWriter(fw);
 		ExecutorService executorService = Executors.newFixedThreadPool(20);
+		Thread.currentThread().setPriority(10);
+		map = new ConcurrentHashMap<HashSet<String>, Serializable>();
 		if (!file.exists()) {
 			file.createNewFile();
 		}
@@ -55,7 +61,7 @@ public class Proto {
 					Company currentCompany = comapniesList.get(i);
 					Company nextCompany = comapniesList.get(j);
 					PrimaryNameRunnable primaryNameRunnable = new PrimaryNameRunnable(
-							currentCompany, nextCompany);
+							currentCompany, nextCompany, map);
 					executorService.execute(primaryNameRunnable);
 				}
 			}
