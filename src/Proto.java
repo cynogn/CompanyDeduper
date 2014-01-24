@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.infoarmy.ir.model.company.Company;
 import com.infoarmy.ir.model.company.CompanyNameUtils;
@@ -21,6 +23,7 @@ public class Proto {
 	public static void main(String[] args) throws IOException {
 		fw = new FileWriter(file.getAbsoluteFile());
 		bw = new BufferedWriter(fw);
+		ExecutorService executorService = Executors.newFixedThreadPool(20);
 		if (!file.exists()) {
 			file.createNewFile();
 		}
@@ -46,29 +49,21 @@ public class Proto {
 
 
 			// Company Name
-			for (int i = 0; i < size - 1; i++) {
+			for (int i = 0; i < (size - 1); i++) {
 
 				for (int j = 1; j < i; j++) {
 					Company currentCompany = comapniesList.get(i);
 					Company nextCompany = comapniesList.get(j);
-					int companyScore = calcualateStringDistance(
-							CompanyNameUtils.getStrippedName(currentCompany
-									.getName()),
-							CompanyNameUtils.getStrippedName(nextCompany
-									.getName()));
-					if (companyScore < 2) {
-						displayCurrentAndNextCompany(currentCompany,
-								nextCompany);
-						System.out.println("_____________");
-
-					}
+					PrimaryNameRunnable primaryNameRunnable = new PrimaryNameRunnable(
+							currentCompany, nextCompany);
+					executorService.execute(primaryNameRunnable);
 				}
 			}
 
 			System.out.println("SHORT NAME MATCHES:\n");
 			System.out.println("*******************");
 			bw.write("SHORT NAME MATCHES:\n");		// Company Name
-			for (int i = 0; i < size - 1; i++) {
+			for (int i = 0; i < (size - 1); i++) {
 				for (int j = 1; j < i; j++) {
 					Company currentCompany = comapniesList.get(i);
 					Company nextCompany = comapniesList.get(j);
@@ -90,7 +85,7 @@ public class Proto {
 			System.out.println("*************************************");
 			bw.write("COMAPANY PRIMARY DOMAIN NAME MATCHES:\n");
 
-			for (int i = 0; i < size - 1; i++) {
+			for (int i = 0; i < (size - 1); i++) {
 				for (int j = 1; j < i; j++) {
 					Company currentCompany = comapniesList.get(i);
 					Company nextCompany = comapniesList.get(j);
@@ -117,7 +112,7 @@ public class Proto {
 				for (int j = i + 1; j < size; j++) {
 					Company currentCompany = comapniesList.get(i);
 					Company nextCompany = comapniesList.get(j);
-					if (currentCompany.getCik() > 0 && nextCompany.getCik() > 0) {
+					if ((currentCompany.getCik() > 0) && (nextCompany.getCik() > 0)) {
 						Boolean companyScore = currentCompany.getCik() == nextCompany
 								.getCik();
 						if (companyScore == true) {
