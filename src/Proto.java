@@ -28,6 +28,7 @@ public class Proto {
 		fw = new FileWriter(file.getAbsoluteFile());
 		bw = new BufferedWriter(fw);
 		ExecutorService executorService = Executors.newFixedThreadPool(20);
+		Thread.currentThread().setPriority(10);
 		map = new ConcurrentHashMap<HashSet<String>, Serializable>();
 		if (!file.exists()) {
 			file.createNewFile();
