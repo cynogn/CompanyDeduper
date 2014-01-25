@@ -28,7 +28,7 @@ public class LevenshteinDistance {
 	}
 
 	public static int printDistance(String s1, String s2) {
-//		System.out.println(s1 + "-->" + s2 + ": " + computeDistance(s1, s2));
+		// System.out.println(s1 + "-->" + s2 + ": " + computeDistance(s1, s2));
 		return computeDistance(s1, s2);
 	}
 
